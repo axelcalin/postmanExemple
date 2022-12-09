@@ -1,0 +1,230 @@
+{
+	"info": {
+		"_postman_id": "fdd21e09-b708-4a32-a500-35df24663c9f",
+		"name": "Exemple",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4406537"
+	},
+	"item": [
+		{
+			"name": "Etalab - Trouver géocode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//-------------------- Schèma ----------------------\r",
+							"const schema =\r",
+							"{\r",
+							"   \"type\": \"object\",\r",
+							"    \"properties\":\r",
+							"    {\r",
+							"        \"features\":\r",
+							"        { \r",
+							"            \"type\": \"array\",\r",
+							"            \"items\": \r",
+							"            [\r",
+							"                {\r",
+							"                    \"properties\":\r",
+							"                    {\r",
+							"                        \"type\": { \"type\": \"string\" },\r",
+							"                        \"geometry\":\r",
+							"                        {\r",
+							"                            \"type\": \"object\",\r",
+							"                            \"properties\":\r",
+							"                            {\r",
+							"                                \"type\": { \"type\": \"string\" },\r",
+							"                                \"coordinates\":\r",
+							"                                {\r",
+							"                                    \"type\": \"array\",\r",
+							"                                    \"items\":\r",
+							"                                    [\r",
+							"                                        { \"type\": \"number\" }\r",
+							"                                    ]\r",
+							"                                }\r",
+							"                            }\r",
+							"                        }\r",
+							"                    }\r",
+							"                }\r",
+							"            ]\r",
+							"        }\r",
+							"    },\r",
+							"    \"required\": [\"features\"],\r",
+							"    \"additionalProperties\": true\r",
+							"}\r",
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"//-------------------- Récupération données ----------------------\r",
+							"var iterationRandom = Math.floor(Math.random() * 5)\r",
+							"try{\r",
+							"    pm.environment.set('long', jsonData.features[iterationRandom].geometry.coordinates[0]);\r",
+							"    pm.environment.set('lat', jsonData.features[iterationRandom].geometry.coordinates[1]);\r",
+							"}catch(e)\r",
+							"{ }\r",
+							"\r",
+							"//-------------------- Tests ----------------------\r",
+							"pm.test(\"Vérification du statut\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Vérification du schema\", () => {\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"//-------------------- Console ----------------------\r",
+							"console.log(\"Les degrés décimaux (DD): \" + pm.environment.get(\"long\") + \", \" + pm.environment.get(\"lat\"))\r",
+							"console.log(\"Correspondent à l'adresse suivant: \" + pm.environment.get(\"adresse\"))\r",
+							"\r",
+							"\r",
+							"//--------------------\r",
+							"//pm.test(\"Vérification du statuts\", function () {\r",
+							"//    pm.response.to.have.status(200);\r",
+							"//    pm.response.to.be.withBody;\r",
+							"//    pm.response.to.be.json;\r",
+							"//    pm.expect(jsonData.token).exist;\r",
+							"//    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"//});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var listeAdresse = [\"47 Rue Monge, 85000 La Roche-sur-Yon\",\"9 Bd Nicéphore Niépce, 44300 Nantes\",\"5 Rue Alessandro Volta, 44470 Carquefou\"]\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api-adresse.data.gouv.fr/search/?q=47 Rue Monge, 8500",
+					"protocol": "https",
+					"host": [
+						"api-adresse",
+						"data",
+						"gouv",
+						"fr"
+					],
+					"path": [
+						"search",
+						""
+					],
+					"query": [
+						{
+							"key": "q",
+							"value": "47 Rue Monge, 8500"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Etalab - Trouver adresse",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"//-------------------- Schèma ----------------------\r",
+							"const schema =\r",
+							"{\r",
+							"   \"type\": \"object\",\r",
+							"    \"properties\":\r",
+							"    {\r",
+							"        \"features\":\r",
+							"        { \r",
+							"            \"type\": \"array\",\r",
+							"            \"items\": \r",
+							"            [\r",
+							"                {\r",
+							"                    \"properties\":\r",
+							"                    {\r",
+							"                        \"properties\":\r",
+							"                        {\r",
+							"                            \"type\": \"object\",\r",
+							"                            \"properties\":\r",
+							"                            {\r",
+							"                                \"label\": { \"type\": \"string\" },\r",
+							"                                \"houseNumber\": { \"type\": \"string\" },\r",
+							"                                \"street\": { \"type\": \"string\" },\r",
+							"                                \"postcode\": { \"type\": \"string\" },\r",
+							"                                \"city\": { \"type\": \"string\" }\r",
+							"                            }\r",
+							"                        }\r",
+							"                    }\r",
+							"                }\r",
+							"            ]\r",
+							"        }\r",
+							"    },\r",
+							"    \"required\": [\"features\"],\r",
+							"    \"additionalProperties\": true\r",
+							"}\r",
+							"\r",
+							"var jsonData = JSON.parse(responseBody);\r",
+							"\r",
+							"//-------------------- Récupération données ----------------------\r",
+							"try{\r",
+							"    pm.environment.set('adresse', jsonData.features[0].properties.label);\r",
+							"}catch(e)\r",
+							"{ }\r",
+							"\r",
+							"//-------------------- Tests ----------------------\r",
+							"pm.test(\"Vérification du statut\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Vérification du schema\", () => {\r",
+							"    pm.response.to.have.jsonSchema(schema);\r",
+							"});\r",
+							"\r",
+							"//--------------------\r",
+							"//pm.test(\"Vérification du statuts\", function () {\r",
+							"//    pm.response.to.have.status(200);\r",
+							"//    pm.response.to.be.withBody;\r",
+							"//    pm.response.to.be.json;\r",
+							"//    pm.expect(jsonData.token).exist;\r",
+							"//    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"//});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api-adresse.data.gouv.fr/reverse/?lon={{long}}&lat={{lat}}",
+					"protocol": "https",
+					"host": [
+						"api-adresse",
+						"data",
+						"gouv",
+						"fr"
+					],
+					"path": [
+						"reverse",
+						""
+					],
+					"query": [
+						{
+							"key": "lon",
+							"value": "{{long}}"
+						},
+						{
+							"key": "lat",
+							"value": "{{lat}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
